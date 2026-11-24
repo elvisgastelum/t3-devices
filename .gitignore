@@ -19,3 +19,11 @@ Thumbs.db
 .vscode/
 *.swp
 *~
+
+# Go and build output
+bin/
+dist/
+coverage.out
+*.out
+*.test
+*.prof

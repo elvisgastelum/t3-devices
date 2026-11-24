@@ -1,0 +1,50 @@
+[tools]
+go = "1.27.4"
+"aqua:dominikh/go-tools/staticcheck" = "2026.2.2"
+
+[tasks.build]
+description = "Build bin/t3-devices with version info"
+run = """
+#!/usr/bin/env bash
+set -euo pipefail
+PKG=github.com/elvisgastelum/t3-devices/internal/version
+LDFLAGS="-X ${PKG}.Version=$(git describe --tags --always --dirty) -X ${PKG}.Commit=$(git rev-parse --short HEAD) -X ${PKG}.Date=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+go build -ldflags "$LDFLAGS" -o bin/t3-devices ./cmd/t3-devices
+"""
+
+[tasks.test]
+description = "Run unit tests"
+run = "go test ./..."
+
+[tasks.check]
+description = "Run the full quality gate"
+run = """
+#!/usr/bin/env bash
+set -euo pipefail
+tracked="$(git ls-files .mcp.json .plans .claude CLAUDE.md)"
+if [ -n "$tracked" ]; then
+  echo "local-only files are tracked:" >&2
+  echo "$tracked" >&2
+  exit 1
+fi
+go vet ./...
+staticcheck ./...
+unformatted="$(gofmt -l .)"
+if [ -n "$unformatted" ]; then
+  echo "gofmt needed for:" >&2
+  echo "$unformatted" >&2
+  exit 1
+fi
+go test ./...
+"""
+
+[tasks.install]
+description = "Build and install to ~/.local/bin/t3-devices"
+run = """
+#!/usr/bin/env bash
+set -euo pipefail
+PKG=github.com/elvisgastelum/t3-devices/internal/version
+LDFLAGS="-X ${PKG}.Version=$(git describe --tags --always --dirty) -X ${PKG}.Commit=$(git rev-parse --short HEAD) -X ${PKG}.Date=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+mkdir -p "$HOME/.local/bin"
+go build -ldflags "$LDFLAGS" -o "$HOME/.local/bin/t3-devices" ./cmd/t3-devices
+"""
