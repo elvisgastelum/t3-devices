@@ -8,3 +8,7 @@ Kaneo is the work tracker, reached through the `kaneo` MCP server. Use the `kane
 - A PR for ticket work starts its body with `Kaneo: [<IDENTIFIER> — <ticket title>](<ticket URL>)`, linking the ticket's Kaneo page, and links every other ticket it touches the same way. Build each URL from IDs read from Kaneo, as the `kaneo-work-tracking` skill describes; never guess them. After opening it, comment the PR URL on the Kaneo task.
 - Save and read tickets through the Agent tool with `subagent_type: "kaneo-scribe"`, a cheap agent, and gather ticket context with ladder read agents, so Kaneo output stays out of this session.
 <!-- END agent-config:kaneo -->
+
+## Setup
+
+Copy `.mcp.json.example` to `.mcp.json` and set the `kaneo` server URL to your own Kaneo instance. `.mcp.json` is git-ignored, so your server URL stays local.
