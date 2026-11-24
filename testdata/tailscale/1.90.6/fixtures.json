@@ -1,0 +1,14 @@
+[
+  {
+    "name": "tailscale",
+    "args": ["status", "--json"],
+    "stdout_file": "status.json",
+    "exit_code": 0
+  },
+  {
+    "name": "tailscale",
+    "args": ["ip", "-4"],
+    "stdout": "100.64.0.1\n",
+    "exit_code": 0
+  }
+]
